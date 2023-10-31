@@ -15,6 +15,8 @@ void multiplication(double a, double b) {
 }
 void division(double a, double b) {
     if (b != 0) {
+        cout << a << "/" << b << "=" << a / b << endl;
+    } else {
         cout << "Ошибка!!" << endl;
     }
 }
