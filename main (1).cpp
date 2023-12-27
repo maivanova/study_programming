@@ -1,0 +1,70 @@
+#include <iostream>
+#include <vector>
+#include <stack>
+
+class Solution {
+public:
+    int maximalRectangle(std::vector<std::vector<char>>& matrix) {
+        if (matrix.empty() || matrix[0].empty()) {
+            return 0;
+        }
+
+        int rows = matrix.size();
+        int cols = matrix[0].size();
+        std::vector<int> heights(cols, 0);
+        int maxArea = 0;
+
+        for (int i = 0; i < rows; ++i) {
+            // Update heights for each row
+            for (int j = 0; j < cols; ++j) {
+                if (matrix[i][j] == '1') {
+                    heights[j] += 1;
+                } else {
+                    heights[j] = 0;
+                }
+            }
+
+            // Calculate the maximum area for each row
+            maxArea = std::max(maxArea, largestRectangleArea(heights));
+        }
+
+        return maxArea;
+    }
+
+private:
+    int largestRectangleArea(const std::vector<int>& heights) {
+        int n = heights.size();
+        std::stack<int> s;
+        int maxArea = 0;
+
+        for (int i = 0; i <= n; ++i) {
+            while (!s.empty() && (i == n || heights[i] < heights[s.top()])) {
+                int height = heights[s.top()];
+                s.pop();
+                int width = s.empty() ? i : i - s.top() - 1;
+                maxArea = std::max(maxArea, height * width);
+            }
+
+            s.push(i);
+        }
+
+        return maxArea;
+    }
+};
+
+int main() {
+    // Пример использования:
+    std::vector<std::vector<char>> matrix = {
+            {'1', '0', '1', '0', '0'},
+            {'1', '0', '1', '1', '1'},
+            {'1', '1', '1', '1', '1'},
+            {'1', '0', '0', '1', '0'}
+    };
+
+    Solution solution;
+    int result = solution.maximalRectangle(matrix);
+
+    std::cout << "The maximum area of the rectangle: " << result << std::endl;
+
+    return 0;
+}
