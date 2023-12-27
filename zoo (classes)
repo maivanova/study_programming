@@ -2,7 +2,6 @@
 #include <vector>
 #include <string>
 
-
 using namespace std;
 
 class Animal
@@ -10,37 +9,36 @@ class Animal
 private:
     string name;
     string type;
+
 public:
-    Animal(string name, string type)
-    {
-        this->name = name;
-        this->type = type;
-    }
-    string getName()
+    Animal(string name, string type) : name(name), type(type) {}
+
+    string getName() const
     {
         return name;
     }
-    string getType()
+
+    string getType() const
     {
         return type;
     }
-    void setName(string name)
+
+    virtual void specialAction() const
     {
-        this->name = name;
+        cout << "No special action for " << type << " " << name << endl;
     }
-    void setType(string type)
-    {
-        this->type = type;
-    }
-    void feed()
+
+    void feed() const
     {
         cout << "Animal " << name << " is eating" << endl;
     }
-    void call()
+
+    void call() const
     {
         cout << "Animal " << name << " is calling" << endl;
     }
-    void stroke()
+
+    void stroke() const
     {
         cout << "Animal " << name << " is being stroked" << endl;
     }
@@ -49,24 +47,33 @@ public:
 class Cat : public Animal
 {
 public:
-    Cat(string name) : Animal(name, "Cat")
+    Cat(string name) : Animal(name, "Cat") {}
+
+    void specialAction() const override
     {
+        cout << "Cat " << getName() << " is purring" << endl;
     }
 };
 
 class Dog : public Animal
 {
 public:
-    Dog(string name) : Animal(name, "Dog")
+    Dog(string name) : Animal(name, "Dog") {}
+
+    void specialAction() const override
     {
+        cout << "Dog " << getName() << " is wagging its tail" << endl;
     }
 };
 
 class Giraffe : public Animal
 {
 public:
-    Giraffe(string name) : Animal(name, "Giraffe")
+    Giraffe(string name) : Animal(name, "Giraffe") {}
+
+    void specialAction() const override
     {
+        cout << "Giraffe " << getName() << " is stretching its neck" << endl;
     }
 };
 
@@ -74,11 +81,10 @@ class Zoo
 {
 private:
     vector<Animal*> animals;
-public:
-    Zoo()
-    {
 
-    }
+public:
+    Zoo() {}
+
     ~Zoo()
     {
         for (int i = 0; i < animals.size(); i++)
@@ -86,10 +92,12 @@ public:
             delete animals[i];
         }
     }
+
     void addAnimal(Animal* animal)
     {
         animals.push_back(animal);
     }
+
     void deleteAnimal(string name)
     {
         for (int i = 0; i < animals.size(); i++)
@@ -101,25 +109,36 @@ public:
             }
         }
     }
-    void feedAll()
+
+    void feedAll() const
     {
         for (int i = 0; i < animals.size(); i++)
         {
             animals[i]->feed();
         }
     }
-    void callAll()
+
+    void callAll() const
     {
         for (int i = 0; i < animals.size(); i++)
         {
             animals[i]->call();
         }
     }
-    void strokeAll()
+
+    void strokeAll() const
     {
         for (int i = 0; i < animals.size(); i++)
         {
             animals[i]->stroke();
+        }
+    }
+
+    void performSpecialActions() const
+    {
+        for (int i = 0; i < animals.size(); i++)
+        {
+            animals[i]->specialAction();
         }
     }
 };
@@ -138,6 +157,7 @@ int main()
     zoo.deleteAnimal("Doggy");
 
     zoo.feedAll();
+    zoo.performSpecialActions();
 
     return 0;
-};
+}
