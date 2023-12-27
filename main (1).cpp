@@ -1,0 +1,66 @@
+#include <iostream>
+#include <vector>
+#include <string>
+
+class NQueens {
+public:
+    std::vector<std::vector<std::string>> solveNQueens(int n) {
+        std::vector<std::vector<std::string>> result;
+        std::vector<std::string> board(n, std::string(n, '.'));
+
+        solveNQueensHelper(board, 0, result);
+
+        return result;
+    }
+
+private:
+    void solveNQueensHelper(std::vector<std::string>& board, int row, std::vector<std::vector<std::string>>& result) {
+        int n = board.size();
+        if (row == n) {
+            result.push_back(board);
+            return;
+        }
+
+        for (int col = 0; col < n; ++col) {
+            if (isValid(board, row, col)) {
+                board[row][col] = 'Q';
+                solveNQueensHelper(board, row + 1, result);
+                board[row][col] = '.';
+            }
+        }
+    }
+
+    bool isValid(const std::vector<std::string>& board, int row, int col) {
+        int n = board.size();
+
+        for (int i = 0; i < row; ++i) {
+            if (board[i][col] == 'Q') {
+                return false; // Check column
+            }
+            if (col - (row - i) >= 0 && board[i][col - (row - i)] == 'Q') {
+                return false; // Check left diagonal
+            }
+            if (col + (row - i) < n && board[i][col + (row - i)] == 'Q') {
+                return false; // Check right diagonal
+            }
+        }
+
+        return true;
+    }
+};
+
+int main() {
+    // Пример использования:
+    int n = 4;
+    NQueens nQueensSolver;
+    std::vector<std::vector<std::string>> solutions = nQueensSolver.solveNQueens(n);
+
+    for (const auto& solution : solutions) {
+        for (const auto& row : solution) {
+            std::cout << row << std::endl;
+        }
+        std::cout << std::endl;
+    }
+
+    return 0;
+}
