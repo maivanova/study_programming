@@ -20,7 +20,7 @@ void AddFirst (student*& people, int id1, string sex1, int age1, int progress1){
         cout << "invalid sex: " << sex1 << ". the sex should be either 'female' or 'male'." << endl;
         return;
     }
-    if (age1 <= 0 || age1 > 150) {
+    if (age1 <= 0 || age1 > 120) {
         cout << "invalid age: " << age1 << ". the age should be a positive integer between 1 and 150." << endl;
         return;
     }
@@ -51,17 +51,17 @@ void RemoveStudentById(student*& head, int id) {
     student* curr = head;
     student* prev = nullptr;
 
-    if (curr != nullptr && curr->id == id) {
-        head = curr->next;
+    if (curr != nullptr && curr -> id == id) {
+        head = curr -> next;
         delete curr;
         return;
     }
-    while (curr != nullptr && curr->id != id) {
+    while (curr != nullptr && curr -> id != id) {
         prev = curr;
-        curr = curr->next;
+        curr = curr -> next;
     }
     if (curr != nullptr) {
-        prev->next = curr->next;
+        prev -> next = curr -> next;
         delete curr;
     }
     else {
