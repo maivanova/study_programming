@@ -4,39 +4,42 @@ using namespace std;
 
 struct student {
     int id;
-    string sex;
+    string gender;
     int age;
     int progress;
     student *next;
 };
 
-void AddFirst (student*& people, int id1, string sex1, int age1, int progress1){
+void DataCheck(int id, string gender, int age, int progress) {
+    if (id <= 0) {
+        cout << "invalid id: " << id << ". the id should be a positive integer." << endl;
+        return;
+    }
+    if (gender != "female" && gender != "male") {
+        cout << "invalid gender: " << gender << ". the sex should be either 'female' or 'male'." << endl;
+        return;
+    }
+    if (age <= 0 || age > 150) {
+        cout << "invalid age: " << age << ". the age should be a positive integer between 1 and 150." << endl;
+        return;
+    }
+    if (progress < 0 || progress > 100) {
+        cout << "invalid progress: " << progress << "%. the progress should be an integer between 0 and 100." << endl;
+        return;
+    }
+}
 
-    if (id1 <= 0) {
-        cout << "invalid id: " << id1 << ". the id should be a positive integer." << endl;
-        return;
-    }
-    if (sex1 != "female" && sex1 != "male") {
-        cout << "invalid sex: " << sex1 << ". the sex should be either 'female' or 'male'." << endl;
-        return;
-    }
-    if (age1 <= 0 || age1 > 120) {
-        cout << "invalid age: " << age1 << ". the age should be a positive integer between 1 and 150." << endl;
-        return;
-    }
-    if (progress1 < 0 || progress1 > 100) {
-        cout << "invalid progress: " << progress1 << "%. the progress should be an integer between 0 and 100." << endl;
-        return;
-    }
+void AddFirst (student*& people, int id, string gender, int age, int progress){
+    DataCheck(id, gender, age, progress);
 
     student *newstudent = new student;
-    newstudent -> id = id1;
-    newstudent -> sex = sex1;
-    newstudent -> age = age1;
-    newstudent -> progress = progress1;
+    newstudent -> id = id;
+    newstudent -> gender = gender;
+    newstudent -> age = age;
+    newstudent -> progress = progress;
     student *tmp = people;
     while (tmp != NULL){
-        if (tmp -> id == id1){
+        if (tmp -> id == id){
             cout << "student with this id already in list\n" << endl;
             return;
         }
@@ -45,6 +48,84 @@ void AddFirst (student*& people, int id1, string sex1, int age1, int progress1){
     newstudent -> next = people;
     people = newstudent;
     return;
+}
+
+void AddLast(student*& people, int id, string gender, int age, int progress) {
+    DataCheck(id, gender, age, progress);
+
+    student* newstudent = new student;
+    newstudent->id = id;
+    newstudent->gender = gender;
+    newstudent->age = age;
+    newstudent->progress = progress;
+    newstudent->next = nullptr;
+
+    if (people == nullptr) {
+        people = newstudent;
+    } else {
+        student* tmp = people;
+        while (tmp->next != nullptr) {
+            tmp = tmp->next;
+        }
+        tmp->next = newstudent;
+    }
+}
+
+void AddBefore(student*& head, int id, int new_id, string new_gender, int new_age, int new_progress) {
+    DataCheck(new_id, new_gender, new_age, new_progress);
+    if (head == nullptr) {
+        cout << "List is empty" << endl;
+        return;
+    }
+
+    if (head->id == id) {
+        student* new_student = new student;
+        new_student->id = new_id;
+        new_student->gender = new_gender;
+        new_student->age = new_age;
+        new_student->progress = new_progress;
+        new_student->next = head;
+        head = new_student;
+        return;
+    }
+
+    student* prev = head;
+    student* current = head->next;
+    while (current != nullptr) {
+        if (current->id == id) {
+            student* new_student = new student;
+            new_student->id = new_id;
+            new_student->gender = new_gender;
+            new_student->age = new_age;
+            new_student->progress = new_progress;
+            new_student->next = current;
+            prev->next = new_student;
+            return;
+        }
+        prev = current;
+        current = current->next;
+    }
+    cout << "element with id " << id << " not found in the list" << endl;
+}
+
+void AddAfter(student* head, int id, int new_id, string new_gender, int new_age, int new_progress) {
+    DataCheck(new_id, new_gender, new_age, new_progress);
+
+    student* current = head;
+    while (current != nullptr) {
+        if (current->id == id) {
+            student* new_student = new student;
+            new_student->id = new_id;
+            new_student->gender = new_gender;
+            new_student->age = new_age;
+            new_student->progress = new_progress;
+            new_student->next = current->next;
+            current->next = new_student;
+            return;
+        }
+        current = current->next;
+    }
+    cout << "element with id " << id << " not found in the list" << endl;
 }
 
 void RemoveStudentById(student*& head, int id) {
@@ -58,10 +139,10 @@ void RemoveStudentById(student*& head, int id) {
     }
     while (curr != nullptr && curr -> id != id) {
         prev = curr;
-        curr = curr -> next;
+        curr = curr->next;
     }
     if (curr != nullptr) {
-        prev -> next = curr -> next;
+        prev -> next = curr->next;
         delete curr;
     }
     else {
@@ -76,7 +157,7 @@ void PrintList (student *people){
     }
     student *tmp = people;
     while (tmp != NULL){
-        cout << "student id:" << tmp -> id << "  sex:" << tmp -> sex
+        cout << "student id:" << tmp -> id << "  gender:" << tmp -> gender
         << "  age:" << tmp -> age << "  progress:" << tmp -> progress << "%" << endl;
         tmp = tmp -> next;
     }
@@ -85,40 +166,21 @@ void PrintList (student *people){
 int main() {
     student *head = NULL;
 
-    int id1 = 1;
-    string sex1 = "female";
-    int age1 = 19;
-    int progress1 = 95;
-
-    int id2 = 2;
-    string sex2 = "female";
-    int age2 = 21;
-    int progress2 = 88;
-
-    int id3 = 3;
-    string sex3 = "female";
-    int age3 = 17;
-    int progress3 = 79;
-
-    int id4 = 4;
-    string sex4 = "female";
-    int age4 = 18;
-    int progress4 = 99;
-
     PrintList(head);
     cout << "++++++++++++++++++++++++++++++++++++++++++++++++++++++\n";
 
-    AddFirst(head, id1, sex1, age1, progress1);
+    AddFirst(head, 4, "female", 18, 97);
     PrintList(head);
     cout << "======================================================\n";
 
-    AddFirst(head, id2, sex2, age2, progress2);
-    AddFirst(head, id3, sex3, age3, progress3);
-    AddFirst(head, id4, sex4, age4, progress4);
+    AddFirst(head, 1, "female", 21, 91);
+    AddLast(head, 5, "female", 20, 81);
+    AddAfter(head, 1, 2, "female", 22, 85);
+    AddBefore(head, 4, 3, "female", 20, 65);
     PrintList(head);
     cout << "******************************************************\n";
 
-    RemoveStudentById(head, 2);
+    RemoveStudentById(head, 4);
     PrintList(head);
     cout << "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n";
 }
